@@ -5,12 +5,14 @@ const authRoute = require("./routes/auth");
 const usersRoute = require("./routes/users");
 const hotelsRoute = require("./routes/hotels");
 const roomsRoute = require("./routes/rooms");
+const cookieParser = require("cookie-parser");
 
 
 
 const app = express();
 dotenv.config();
 
+// Connecting to Database
 
 mongoose
     .connect(process.env.MONGO_URL)
@@ -19,8 +21,11 @@ mongoose
         console.log("Connection to database failed : " , err);
 });
 
-
+// Middlewares
 app.use(express.json());
+app.use(cookieParser());
+
+
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);

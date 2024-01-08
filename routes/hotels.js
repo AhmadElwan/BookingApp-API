@@ -1,21 +1,22 @@
 const express = require("express");
 const Hotel = require("../models/Hotel");
 const { createError } = require("../utils/error");
+const { verifyAdmin } = require("../utils/verifyToken");
 const { createHotel, updateHotel, deleteHotel, getHotel, getAllHotels } = require("../controllers/hotel");
 const router = require("express").Router();
 
 
 // Adding a new hotel
 
-router.post("/", createHotel);
+router.post("/", verifyAdmin, createHotel);
 
 // Updating an existing hotel 
 
-router.put("/:id", updateHotel);
+router.put("/:id", verifyAdmin, updateHotel);
 
 // Delete a hotel 
 
-router.delete("/:id", deleteHotel);
+router.delete("/:id", verifyAdmin, deleteHotel);
 
 // Get a specific hotel 
 

@@ -1,6 +1,10 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const { createError } = require("../utils/error");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 // Register a new user
 
@@ -34,9 +38,15 @@ const login = async (req, res, next) => {
         const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
         if(!isPasswordCorrect) return next(createError(404, "Wrong Credentials !"));
 
+        const token = jwt.sign({id: user._id, isAdmin: user.isAdmin}, process.env.JWT_KEY);
+
         const {password, isAdmin, ...others} = user._doc;
 
-        res.status(200).json(others);
+        res
+        .cookie("access_token", token, {
+            httpOnly: true
+        }).status(200).json(others);
+        
     }catch(err){
         next(err);
     }
